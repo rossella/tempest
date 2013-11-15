@@ -20,7 +20,7 @@ from tempest.common.utils.data_utils import rand_name
 from tempest.test import attr
 
 
-class RoutersTest(base.BaseAdminNetworkTest):
+class RoutersTest(base.BaseRouterTest):
     # NOTE(salv-orlando): This class inherits from BaseAdminNetworkTest
     # as some router operations, such as enabling or disabling SNAT
     # require admin credentials by default
@@ -29,28 +29,6 @@ class RoutersTest(base.BaseAdminNetworkTest):
     @classmethod
     def setUpClass(cls):
         super(RoutersTest, cls).setUpClass()
-
-    def _delete_router(self, router_id):
-        resp, _ = self.client.delete_router(router_id)
-        self.assertEqual(204, resp.status)
-        # Asserting that the router is not found in the list
-        # after deletion
-        resp, list_body = self.client.list_routers()
-        self.assertEqual('200', resp['status'])
-        routers_list = list()
-        for router in list_body['routers']:
-            routers_list.append(router['id'])
-        self.assertNotIn(router_id, routers_list)
-
-    def _remove_router_interface_with_subnet_id(self, router_id, subnet_id):
-        resp, _ = self.client.remove_router_interface_with_subnet_id(
-            router_id, subnet_id)
-        self.assertEqual('200', resp['status'])
-
-    def _remove_router_interface_with_port_id(self, router_id, port_id):
-        resp, _ = self.client.remove_router_interface_with_port_id(
-            router_id, port_id)
-        self.assertEqual('200', resp['status'])
 
     @attr(type='smoke')
     def test_create_show_list_update_delete_router(self):
